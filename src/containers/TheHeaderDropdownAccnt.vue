@@ -3,7 +3,7 @@
     <template #toggler>
       <CHeaderNavLink>
         <div class="c-avatar">
-          <img src="gokinsui/imgs/avatars/def.png" class="c-avatar-img " />
+          <img src="/jjenkins/gokinsui/imgs/avatars/def.png" class="c-avatar-img " />
         </div>
         {{nicks}}
       </CHeaderNavLink>
