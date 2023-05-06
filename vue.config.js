@@ -1,7 +1,7 @@
 module.exports = {
     publicPath: './', //process.env.NODE_ENV === 'production'?'/vue/user/':'/',
     //outputDir:'dist',
-    assetsDir: 'v2dist/',
+    assetsDir: 'gokinsui/',
     lintOnSave: false,
     runtimeCompiler: true,
     configureWebpack: {
@@ -21,8 +21,8 @@ module.exports = {
         port: 8080, // 端口
         https: false, // 启用https
         proxy: {
-            '/jjenkins/api': {
-                target: 'http://localhost:8030',
+            '/api': {
+                target: 'http://192.168.50.11:8030',
                 changeOrigin: true,
                 secure: false,
                 /* pathRewrite: {

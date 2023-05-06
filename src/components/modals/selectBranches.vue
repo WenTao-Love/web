@@ -2,7 +2,7 @@
   <CModal title="请输入仓库分支或者commitSha" :show="shown" @update:show="(val) => $emit('update:shown', val)" :centered="true">
     <template #footer>
       <CButton color="warning" variant="outline" @click="$emit('update:shown', false)">取消</CButton>
-      <CButton color="info" @click="run">确定</CButton>
+      <CButton color="info" @click="run" :disabled="submiting">确定</CButton>
     </template>
     <div>
 
@@ -24,26 +24,30 @@ export default {
     orgId: String,
   },
   watch: {
-    id (nv) {
+    id(nv) {
       if (nv != "") {
         this.searchSha()
       }
     },
-    shown (nv) {
-      this.value = {}
+    shown(nv) {
+      this.value = {};
+      /* this.value = {}
+      if (this.options.length > 0)
+        this.value = this.options[0]; */
     }
   },
-  mounted () {
+  mounted() {
     this.searchSha();
   },
-  data () {
+  data() {
     return {
       value: {},
-      options: []
+      options: [],
+      submiting: false,
     }
   },
   methods: {
-    searchSha (q) {
+    searchSha(q) {
       if (this.id === "") {
         return
       }
@@ -51,16 +55,23 @@ export default {
         q: q,
         id: this.id,
       }).then((res) => {
-        this.options = res.data;
+        this.options = res.data || [];
+        if (this.options.length > 0)
+          this.value = this.options[0];
+        else
+          this.value = {}
       }).catch((err) => UtilCatch(this, err));
     },
-    change (value, id) {
+    change(value, id) {
       this.value = { name: value }
       this.searchSha(value)
     },
-    run () {
+    run() {
+      if (this.submiting) return;
+      this.submiting = true;
+      console.log('run value:', this.value);
       let par = { pipelineId: this.id, }
-      if (this.value != null) {
+      if (this.value) {
         par.sha = this.value.name
       }
       RunPipeline(par)
@@ -71,7 +82,9 @@ export default {
           else
             this.$router.push(`/pipeline/build/${res.data.id}`);
         })
-        .catch((err) => UtilCatch(this, err));
+        .catch((err) => UtilCatch(this, err, () => {
+          this.submiting = false;
+        }));
     }
   },
 };
